@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route and Flora/Fauna between Shillong and Guwahati</title>
+    <title>Route and Flora/Fauna between Laitumukrah and Rynjah</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #map {
@@ -27,14 +27,14 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var map = L.map('map').setView([25.5787, 91.8933], 8); // Center map between Shillong and Guwahati
+            var map = L.map('map').setView([25.5707, 91.8977], 14); // Center map between Laitumukrah and Rynjah
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            var shillong = L.marker([25.5787, 91.8933]).addTo(map); // Add marker for Shillong
-            var guwahati = L.marker([26.1445, 91.7362]).addTo(map); // Add marker for Guwahati
+            var laitumukrah = L.marker([25.5707, 91.8977]).addTo(map); // Add marker for Laitumukrah
+            var rynjah = L.marker([25.5712123, 91.9129771]).addTo(map); // Add marker for Rynjah
 
             var latlngs = [
                 [25.5707, 91.8977], // Laitumukhrah
@@ -83,11 +83,11 @@
                     });
             }
 
-            // Coordinates for bounding box around Shillong and Guwahati
-            var latitude1 = 26.1445; // North latitude (Guwahati)
-            var longitude1 = 91.8933; // East longitude (Guwahati)
-            var latitude2 = 25.5787; // South latitude (Shillong)
-            var longitude2 = 91.7362; // West longitude (Shillong)
+            // Coordinates for bounding box around Laitumukrah and Rynjah
+            var latitude1 = 25.5712123; // North latitude (Rynjah)
+            var longitude1 = 91.9129771; // East longitude (Rynjah)
+            var latitude2 = 25.5707; // South latitude (Laitumukrah)
+            var longitude2 = 91.8977; // West longitude (Laitumukrah)
 
             fetchObservations(latitude1, longitude1, latitude2, longitude2);
         });
