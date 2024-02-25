@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route and Flora/Fauna between Shillong and Guwahati</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 400px;
+        }
+        .observation {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Route and Flora/Fauna between Shillong and Guwahati</h1>
+    <div id="map"></div>
+    <div id="observations"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var map = L.map('map').setView([25.5787, 91.8933], 8); // Center map between Shillong and Guwahati
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            var shillong = L.marker([25.5787, 91.8933]).addTo(map); // Add marker for Shillong
+            var guwahati = L.marker([26.1445, 91.7362]).addTo(map); // Add marker for Guwahati
+
+            var latlngs = [
+                [25.5787, 91.8933], // Shillong
+                [26.1445, 91.7362]  // Guwahati
+            ];
+
+            var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map); // Add polyline for the route
+
+            // Zoom the map to the polyline
+            map.fitBounds(polyline.getBounds());
+
+            // Fetch flora and fauna observations from iNaturalist API
+            var observationsContainer = document.getElementById("observations");
+            var observationsEndpoint = 'https://api.inaturalist.org/v1/observations';
+
+            function fetchObservations(latitude1, longitude1, latitude2, longitude2) {
+                fetch(`${observationsEndpoint}?nelat=${latitude1}&nelng=${longitude1}&swlat=${latitude2}&swlng=${longitude2}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        observationsContainer.innerHTML = '';
+
+                        data.results.forEach(observation => {
+                            var observationDiv = document.createElement("div");
+                            observationDiv.classList.add("observation");
+
+                            var speciesName = observation.taxon && observation.taxon.name ? observation.taxon.name : 'Unknown';
+                            var observerName = observation.user ? observation.user.login : 'Unknown';
+                            var location = observation.place_guess || 'Unknown';
+                            var observationDate = observation.observed_on || 'Unknown';
+
+                            var image = observation.photos && observation.photos.length > 0 ? observation.photos[0].url : '';
+
+                            observationDiv.innerHTML = `
+                                <h2>${speciesName}</h2>
+                                ${image ? `<img src="${image}" alt="${speciesName}">` : ''}
+                                <p>Observer: ${observerName}</p>
+                                <p>Location: ${location}</p>
+                                <p>Date: ${observationDate}</p>
+                            `;
+
+                            observationsContainer.appendChild(observationDiv);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            }
+
+            // Coordinates for bounding box around Shillong and Guwahati
+            var latitude1 = 26.1445; // North latitude (Guwahati)
+            var longitude1 = 91.8933; // East longitude (Guwahati)
+            var latitude2 = 25.5787; // South latitude (Shillong)
+            var longitude2 = 91.7362; // West longitude (Shillong)
+
+            fetchObservations(latitude1, longitude1, latitude2, longitude2);
+        });
+    </script>
+</body>
+</html>
